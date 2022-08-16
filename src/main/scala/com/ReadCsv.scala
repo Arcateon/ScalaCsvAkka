@@ -1,6 +1,6 @@
 package com
 
-import com.Cases.{SalesById, SalesByIdError, TotalSales}
+import com.Cases.{DataListOfRegion, SalesById, SalesByIdError, TotalSales}
 import com.github.tototoshi.csv.CSVWriter
 import org.json4s.Formats
 import org.json4s.jackson.Serialization
@@ -53,6 +53,33 @@ object ReadCsv extends App {
         }
       }
       resJson
+    } catch {
+      case _: FileNotFoundException =>
+        "404"
+    }
+  }
+
+  def dataListByRegion(region: String): String = {
+    try {
+      val bufferedSource: BufferedSource = io.Source
+        .fromFile("src/testData.csv")
+
+      var resultJson = ""
+      val resultArray = ArrayBuffer[String]()
+
+      for (line <- bufferedSource.getLines()) {
+        if (line.contains(region.capitalize)) {
+          val cols = line.split(",").map(_.trim)
+          val resultString = s"{sales:${cols(0)}" +
+            s", index:${cols(1)}" +
+            s", region:${cols(2)}" +
+            s", id:${cols(3)}}"
+          resultArray += resultString
+          implicit val formats: Formats = org.json4s.DefaultFormats.withLong.withDouble.withStrictOptionParsing
+          resultJson = Serialization.write(DataListOfRegion(resultArray))
+        }
+      }
+      resultJson
     } catch {
       case _: FileNotFoundException =>
         "404"

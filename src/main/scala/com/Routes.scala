@@ -2,7 +2,7 @@ package com
 
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
-import com.Cases.SalesByIdError
+import com.Cases.{DataListOfRegion, DataListOfRegionError, SalesByIdError}
 import org.json4s.Formats
 import org.json4s.jackson.Serialization
 
@@ -26,6 +26,15 @@ object Routes {
             complete(ReadCsv.dataById(id))
           } else if (ReadCsv.dataById(id).isEmpty) {
             complete(Serialization.write(SalesByIdError(id, message = "id value is not found")))
+          } else complete("Server error")
+        }
+      } ~
+      pathPrefix("points-by-region") {
+        parameters("region") { (region) =>
+          if (ReadCsv.dataListByRegion(region) != "") {
+            complete(ReadCsv.dataListByRegion(region))
+          } else if (ReadCsv.dataListByRegion(region).isEmpty) {
+            complete(Serialization.write(DataListOfRegionError(region, message = "region value is not found")))
           } else complete("Server error")
         }
       }
