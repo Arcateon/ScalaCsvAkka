@@ -5,7 +5,6 @@ import com.github.tototoshi.csv.CSVWriter
 import org.json4s.Formats
 import org.json4s.jackson.Serialization
 
-import java.io.FileNotFoundException
 import scala.io.BufferedSource
 import scala.collection.mutable.ArrayBuffer
 
@@ -13,7 +12,7 @@ import scala.collection.mutable.ArrayBuffer
 object ReadCsv {
 
   def salesByRegion(region: String): String = {
-    try {
+
       var sum = 0
       var count = 0
       val bufferedSource: BufferedSource = io.Source
@@ -31,14 +30,11 @@ object ReadCsv {
       val resJson = Serialization.write(TotalSales(region, sum, count))
       bufferedSource.close()
       resJson
-    } catch {
-      case _: FileNotFoundException =>
-      "404"
-    }
+
   }
 
   def dataById(id: String): String = {
-    try {
+
       val bufferedSource: BufferedSource = io.Source
         .fromFile("src/testData.csv")
       var resJson = ""
@@ -57,14 +53,11 @@ object ReadCsv {
       }
       bufferedSource.close()
       resJson
-    } catch {
-      case _: FileNotFoundException =>
-        "404"
-    }
+
   }
 
   def dataListByRegion(region: String): String = {
-    try {
+
       val bufferedSource: BufferedSource = io.Source
         .fromFile("src/testData.csv")
 
@@ -87,14 +80,11 @@ object ReadCsv {
       }
       bufferedSource.close()
       resultJson
-    } catch {
-      case _: FileNotFoundException =>
-        "404"
-    }
+
   }
 
   def dataListById(id: String): String = {
-    try {
+
       val bufferedSource: BufferedSource = io.Source
         .fromFile("src/testData.csv")
 
@@ -117,10 +107,7 @@ object ReadCsv {
       }
       bufferedSource.close()
       resultJson
-    } catch {
-      case _: FileNotFoundException =>
-        "404"
-    }
+
   }
 
   def dataListBySales(sales: String): String = {
@@ -148,8 +135,6 @@ object ReadCsv {
       bufferedSource.close()
       resultJson
     } catch {
-      case _: FileNotFoundException =>
-        "404"
       case _: NumberFormatException =>
         "405"
     }

@@ -15,9 +15,7 @@ object Routes {
     // sample request: /total-sales/?region=московская, /sales/?region=Чувашия
     pathPrefix("total-sales") {
       parameters("region") { (region) =>
-        if (ReadCsv.salesByRegion(region) != "404") {
-          complete(ReadCsv.salesByRegion(region))
-        } else complete("Server error")
+        complete("Server error")
       }
     } ~ // sample request: /data-by-id/?id=300
       pathPrefix("data-by-id") {
@@ -49,7 +47,7 @@ object Routes {
       } ~ // sample request: /more-than/?sales=6000
       pathPrefix("more-than") {
         parameters("sales") { (sales) =>
-          if (ReadCsv.dataListBySales(sales) != "404" && ReadCsv.dataListBySales(sales) != "405") {
+          if (ReadCsv.dataListBySales(sales) != "405") {
             complete(ReadCsv.dataListBySales(sales))
           } else if (ReadCsv.dataListBySales(sales) == "405") {
             complete(Serialization.write(MoreThanSalesError(sales, message = "invalid sales")))
