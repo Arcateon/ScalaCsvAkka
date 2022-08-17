@@ -15,7 +15,7 @@ object Routes {
     // sample request: /total-sales/?region=московская, /sales/?region=Чувашия
     pathPrefix("total-sales") {
       parameters("region") { (region) =>
-        complete("Server error")
+        complete(ReadCsv.salesByRegion(region))
       }
     } ~ // sample request: /data-by-id/?id=300
       pathPrefix("data-by-id") {
