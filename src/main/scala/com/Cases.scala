@@ -14,4 +14,8 @@ object Cases {
 
   case class MoreThanSalesError(sales: String, message: String)
 
+  case class AddToCsvResponse(success: Boolean, message: String)
+
+  case class InputData(sales: Int, index: Int, region: String, id: Int)
+
 }

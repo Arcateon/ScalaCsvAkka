@@ -1,12 +1,12 @@
 package com
 
-import com.Cases.{DataListOfRegion, SalesById, TotalSales}
+import com.Cases.{AddToCsvResponse, DataListOfRegion, SalesById, TotalSales}
 import com.github.tototoshi.csv.CSVWriter
 import org.json4s.Formats
 import org.json4s.jackson.Serialization
 
 import java.io.FileNotFoundException
-import scala.io.{BufferedSource, Source}
+import scala.io.BufferedSource
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -149,6 +149,37 @@ object ReadCsv {
         "404"
       case _: NumberFormatException =>
         "405"
+    }
+  }
+
+  def writeDataToCsv(sales: Int, index: Int, region: String, id: Int): String = {
+
+    val bufferedSource: BufferedSource = io.Source
+      .fromFile("src/testData.csv")
+    val idArr = ArrayBuffer[Int]()
+    for (line <- bufferedSource.getLines.drop(1)) {
+      val cols = line.split(",").map(_.trim)
+      idArr += cols(3).toInt
+    }
+
+    var resultJson = ""
+    if (!idArr.contains(id)) {
+      val writer = CSVWriter
+        .open("src/testData.csv"
+          , append = true)
+
+      writer.writeRow(List(sales, index, region, id))
+      writer.close
+      bufferedSource.close()
+      implicit val formats: Formats = org.json4s.DefaultFormats.withLong.
+        withDouble.withStrictOptionParsing
+      resultJson = Serialization.write(AddToCsvResponse(success = true, "data added"))
+      resultJson
+    } else {
+      implicit val formats: Formats = org.json4s.DefaultFormats.withLong.
+        withDouble.withStrictOptionParsing
+      resultJson = Serialization.write(AddToCsvResponse(success = false, "id value is already exist"))
+      resultJson
     }
   }
 
