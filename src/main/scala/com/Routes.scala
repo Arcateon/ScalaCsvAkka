@@ -61,10 +61,10 @@ object Routes {
               val requestJson = JsonMethods.parse(body)
               val request = requestJson.extract[InputData]
                 complete(ReadCsv.writeDataToCsv(
-                  request.sales,
-                  request.index,
+                  request.sales.toString,
+                  request.index.toString,
                   request.region,
-                  request.id
+                  request.id.toString
                 ))
           }
         }

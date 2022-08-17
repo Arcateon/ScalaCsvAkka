@@ -27,7 +27,7 @@ object ReadCsv {
       }
       implicit val formats: Formats = org.json4s.DefaultFormats.withLong
         .withDouble.withStrictOptionParsing
-      val resJson = Serialization.write(TotalSales(region, sum, count))
+      val resJson = Serialization.write(TotalSales(region, sum.toString, count.toString))
       bufferedSource.close()
       resJson
 
@@ -140,7 +140,7 @@ object ReadCsv {
     }
   }
 
-  def writeDataToCsv(sales: Int, index: Int, region: String, id: Int): String = {
+  def writeDataToCsv(sales: String, index: String, region: String, id: String): String = {
 
     val bufferedSource: BufferedSource = io.Source
       .fromFile("src/testData.csv")
@@ -151,7 +151,7 @@ object ReadCsv {
     }
 
     var resultJson = ""
-    if (!idArr.contains(id)) {
+    if (!idArr.contains(id.toInt)) {
       val writer = CSVWriter
         .open("src/testData.csv", append = true)
 

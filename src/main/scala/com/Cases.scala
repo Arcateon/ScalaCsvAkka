@@ -4,7 +4,7 @@ import scala.collection.mutable.ArrayBuffer
 
 object Cases {
 
-  case class TotalSales(region: String, sales: Int, points: Int)
+  case class TotalSales(region: String, sales: String, points: String)
 
   case class SalesById(sales: String, index: String, region: String, id: String)
   case class SalesByIdError(id: String, message: String)
