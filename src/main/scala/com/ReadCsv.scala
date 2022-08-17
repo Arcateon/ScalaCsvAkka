@@ -74,7 +74,8 @@ object ReadCsv {
       for (line <- bufferedSource.getLines()) {
         if (line.contains(region.capitalize)) {
           val cols = line.split(",").map(_.trim)
-          val resultString = s"{sales:${cols(0)}" +
+          val resultString =
+            s"{sales:${cols(0)}" +
             s", index:${cols(1)}" +
             s", region:${cols(2)}" +
             s", id:${cols(3)}}"
@@ -103,7 +104,8 @@ object ReadCsv {
       for (line <- bufferedSource.getLines.drop(1)) {
         val cols = line.split(",").map(_.trim)
         if (cols(3).startsWith(id)) {
-          val resultString = s"{sales:${cols(0)}" +
+          val resultString =
+            s"{sales:${cols(0)}" +
             s", index:${cols(1)}" +
             s", region:${cols(2)}" +
             s", id:${cols(3)}}"
@@ -132,7 +134,8 @@ object ReadCsv {
       for (line <- bufferedSource.getLines.drop(1)) {
         val cols = line.split(",").map(_.trim)
         if (cols(0).toInt > sales.toInt) {
-          val resultString = s"{sales:${cols(0)}" +
+          val resultString =
+            s"{sales:${cols(0)}" +
             s", index:${cols(1)}" +
             s", region:${cols(2)}" +
             s", id:${cols(3)}}"
@@ -165,8 +168,7 @@ object ReadCsv {
     var resultJson = ""
     if (!idArr.contains(id)) {
       val writer = CSVWriter
-        .open("src/testData.csv"
-          , append = true)
+        .open("src/testData.csv", append = true)
 
       writer.writeRow(List(sales, index, region, id))
       writer.close
