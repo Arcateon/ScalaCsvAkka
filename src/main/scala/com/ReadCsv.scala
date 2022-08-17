@@ -1,6 +1,6 @@
 package com
 
-import com.Cases.{DataListOfRegion, SalesById, SalesByIdError, TotalSales}
+import com.Cases.{DataListOfRegion, SalesById, TotalSales}
 import com.github.tototoshi.csv.CSVWriter
 import org.json4s.Formats
 import org.json4s.jackson.Serialization
@@ -26,8 +26,10 @@ object ReadCsv extends App {
           count += 1
         }
       }
-      implicit val formats: Formats = org.json4s.DefaultFormats.withLong.withDouble.withStrictOptionParsing
+      implicit val formats: Formats = org.json4s.DefaultFormats.withLong
+        .withDouble.withStrictOptionParsing
       val resJson = Serialization.write(TotalSales(region, sum, count))
+      bufferedSource.close()
       resJson
     } catch {
       case _: FileNotFoundException =>
@@ -48,10 +50,12 @@ object ReadCsv extends App {
           val region = cols(2)
           val id = cols(3)
 
-          implicit val formats: Formats = org.json4s.DefaultFormats.withLong.withDouble.withStrictOptionParsing
+          implicit val formats: Formats = org.json4s.DefaultFormats.withLong
+            .withDouble.withStrictOptionParsing
           resJson = Serialization.write(SalesById(sales, index, region, id))
         }
       }
+      bufferedSource.close()
       resJson
     } catch {
       case _: FileNotFoundException =>
@@ -75,10 +79,41 @@ object ReadCsv extends App {
             s", region:${cols(2)}" +
             s", id:${cols(3)}}"
           resultArray += resultString
-          implicit val formats: Formats = org.json4s.DefaultFormats.withLong.withDouble.withStrictOptionParsing
+          implicit val formats: Formats = org.json4s.DefaultFormats.withLong.
+            withDouble.withStrictOptionParsing
           resultJson = Serialization.write(DataListOfRegion(resultArray))
         }
       }
+      bufferedSource.close()
+      resultJson
+    } catch {
+      case _: FileNotFoundException =>
+        "404"
+    }
+  }
+
+  def dataListById(id: String): String = {
+    try {
+      val bufferedSource: BufferedSource = io.Source
+        .fromFile("src/testData.csv")
+
+      var resultJson = ""
+      val resultArray = ArrayBuffer[String]()
+
+      for (line <- bufferedSource.getLines.drop(1)) {
+        val cols = line.split(",").map(_.trim)
+        if (cols(3).startsWith(id)) {
+          val resultString = s"{sales:${cols(0)}" +
+            s", index:${cols(1)}" +
+            s", region:${cols(2)}" +
+            s", id:${cols(3)}}"
+          resultArray += resultString
+          implicit val formats: Formats = org.json4s.DefaultFormats.withLong.
+            withDouble.withStrictOptionParsing
+          resultJson = Serialization.write(DataListOfRegion(resultArray))
+        }
+      }
+      bufferedSource.close()
       resultJson
     } catch {
       case _: FileNotFoundException =>

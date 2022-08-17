@@ -28,13 +28,22 @@ object Routes {
             complete(Serialization.write(SalesByIdError(id, message = "id value is not found")))
           } else complete("Server error")
         }
-      } ~
+      } ~ // sample request: /points-by-region/?region=московская
       pathPrefix("points-by-region") {
         parameters("region") { (region) =>
           if (ReadCsv.dataListByRegion(region) != "") {
             complete(ReadCsv.dataListByRegion(region))
           } else if (ReadCsv.dataListByRegion(region).isEmpty) {
             complete(Serialization.write(DataListOfRegionError(region, message = "region value is not found")))
+          } else complete("Server error")
+        }
+      } ~
+      pathPrefix("starts-with-id") {
+        parameters("id") { (id) =>
+          if (ReadCsv.dataListById(id) != "") {
+            complete(ReadCsv.dataListById(id))
+          } else if (ReadCsv.dataListById(id).isEmpty) {
+            complete(Serialization.write(DataListOfRegionError(id, message = "id value is not found")))
           } else complete("Server error")
         }
       }

@@ -12,7 +12,7 @@ object AkkaHttp extends App {
 
   implicit val log: LoggingAdapter = Logging(system, "main")
 
-  val port = 8088
+  val port = 8888
 
   val bindingFuture =
     Http().bindAndHandle(Routes.route, "localhost", port)
