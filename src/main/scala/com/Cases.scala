@@ -12,4 +12,6 @@ object Cases {
   case class DataListOfRegion(points: ArrayBuffer[String])
   case class DataListOfRegionError(region: String, message: String)
 
+  case class MoreThanSalesError(sales: String, message: String)
+
 }

@@ -10,7 +10,7 @@ import scala.io.{BufferedSource, Source}
 import scala.collection.mutable.ArrayBuffer
 
 
-object ReadCsv extends App {
+object ReadCsv {
 
   def salesByRegion(region: String): String = {
     try {
@@ -118,6 +118,37 @@ object ReadCsv extends App {
     } catch {
       case _: FileNotFoundException =>
         "404"
+    }
+  }
+
+  def dataListBySales(sales: String): String = {
+    try {
+      val bufferedSource: BufferedSource = io.Source
+        .fromFile("src/testData.csv")
+
+      var resultJson = ""
+      val resultArray = ArrayBuffer[String]()
+
+      for (line <- bufferedSource.getLines.drop(1)) {
+        val cols = line.split(",").map(_.trim)
+        if (cols(0).toInt > sales.toInt) {
+          val resultString = s"{sales:${cols(0)}" +
+            s", index:${cols(1)}" +
+            s", region:${cols(2)}" +
+            s", id:${cols(3)}}"
+          resultArray += resultString
+          implicit val formats: Formats = org.json4s.DefaultFormats.withLong.
+            withDouble.withStrictOptionParsing
+          resultJson = Serialization.write(DataListOfRegion(resultArray))
+        }
+      }
+      bufferedSource.close()
+      resultJson
+    } catch {
+      case _: FileNotFoundException =>
+        "404"
+      case _: NumberFormatException =>
+        "405"
     }
   }
 
